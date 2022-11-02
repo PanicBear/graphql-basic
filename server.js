@@ -1,5 +1,16 @@
 import { ApolloServer, gql } from 'apollo-server';
 
+const tweets = [
+  {
+    id: '1',
+    text: 'tweet1',
+  },
+  {
+    id: '2',
+    text: 'tweet2',
+  },
+];
+
 const typeDefs = gql`
   type User {
     id: ID!
@@ -10,7 +21,7 @@ const typeDefs = gql`
   type Tweet {
     id: ID!
     text: String!
-    author: User!
+    author: User
   }
   type Query {
     allTweets: [Tweet!]!
@@ -22,7 +33,21 @@ const typeDefs = gql`
   }
 `;
 
-const server = new ApolloServer({ typeDefs });
+const resolvers = {
+  Query: {
+    allTweets() {
+      return tweets;
+    },
+    tweet(root, { id }) {
+      // console.log(root);
+      console.log(id);
+      console.log(tweets.find((tweet) => tweet.id === id));
+      return tweets.find((tweet) => tweet.id === id);
+    },
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
 
 server.listen().then(({ url }) => {
   console.log(`running on ${url}`);
