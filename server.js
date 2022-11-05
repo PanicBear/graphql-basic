@@ -4,10 +4,12 @@ let tweets = [
   {
     id: '1',
     text: 'tweet1',
+    userId: '2',
   },
   {
     id: '2',
     text: 'tweet2',
+    userId: '1',
   },
 ];
 
@@ -53,7 +55,7 @@ const resolvers = {
       return tweets;
     },
     tweet(root, { id }) {
-      // console.log(root);
+      console.log(root);
       console.log(id);
       return tweets.find((tweet) => tweet.id === id);
     },
@@ -62,15 +64,19 @@ const resolvers = {
     },
   },
   Mutation: {
-    postTweet(_, { text, userId }) {
-      const id = tweets.length + 1;
-      const newTweet = {
-        id,
-        text,
-      };
-      tweets.push(newTweet);
-      console.log(tweets);
-      return newTweet;
+    postTweet(_, { text, userId: id }) {
+      const isValidUser = users.find((user) => user.id === id);
+
+      if (isValidUser) {
+        const newTweet = {
+          id,
+          text,
+        };
+        tweets.push(newTweet);
+        return newTweet;
+      }
+
+      throw Error('missing user');
     },
     deleteTweet(_, { id }) {
       const tweet = tweets.find((tweet) => tweet.id === id);
@@ -85,6 +91,14 @@ const resolvers = {
     fullName({ firstName, lastName }, args) {
       const fullName = `${firstName} ${lastName}`;
       return fullName;
+    },
+  },
+  Tweet: {
+    author(root, args) {
+      const { userId } = root;
+      const user = users.find((user) => user.id === userId);
+
+      return user;
     },
   },
 };
