@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server';
 import { Resolver, Schema } from './src/index.js';
 
 const server = new ApolloServer({
-  typeDefs: [Schema.Query, Schema.Mutation, Schema.User, Schema.Tweet],
+  typeDefs: [Schema.Query, Schema.Mutation, Schema.User, Schema.Tweet, Schema.Movie],
   resolvers: {
     ...Resolver.Query,
     ...Resolver.Mutation,
